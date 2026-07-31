@@ -177,8 +177,11 @@ from complete batches by the full split size. The release reports that value as
 denominator.
 
 MPJPE is reported in millimeters against the MediaPipe-derived 3D pseudo
-labels. It should not be interpreted as error against motion-capture ground
-truth.
+labels. This model metric is not normalized by palm width, hand length, or any
+other hand-size statistic, and it should not be interpreted as error against
+motion-capture ground truth. The paper's hand-height-normalized error is a
+separate pseudo-label validation that compares MediaPipe outputs with manual 2D
+annotations; it is not a normalized model MPJPE.
 
 ## Stage 2: Gesture Recognition
 
