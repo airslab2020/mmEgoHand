@@ -1,0 +1,62 @@
+model:
+  frames: 30
+  radar_height: 256
+  radar_width: 128
+  hidden_dim: 512
+  attention_heads: 8
+  encoder_layers: 6
+  pose_decoder_layers: 6
+  context_decoder_layers: 30
+  candidate_queries: 100
+  keypoints_per_hand: 21
+  legacy_ffn_dim: 2048
+  active_ffn_dim: 1024
+  dropout: 0.1
+  radar_fusion_weight: 0.9
+  imu_fusion_weight: 0.1
+  keep_legacy_parameters: true
+
+data:
+  root: data
+  train_split: splits/train.txt
+  test_split: splits/test.txt
+  radar_dir: mmwave
+  imu_dir: imu
+  pseudo_label_dir: pseudo_labels
+  pose_output_dir: pose_outputs
+  raw_frames: 40
+  model_frames: 30
+
+loss:
+  matching_class_cost: 5.0
+  matching_keypoint_cost: 25.0
+  class_loss_weight: 1.0
+  keypoint_loss_weight: 5.0
+
+training:
+  seed: 42
+  device: cuda
+  batch_size: 32
+  epochs: 200
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  scheduler_step: 100
+  scheduler_gamma: 0.5
+  num_workers: 2
+  drop_last_train: true
+  drop_last_eval: true
+  output_dir: outputs/pose
+
+gesture:
+  architecture: resnet50
+  num_classes: 8
+  batch_size: 32
+  epochs: 500
+  learning_rate: 0.01
+  weight_decay: 0.01
+  scheduler_step: 100
+  scheduler_gamma: 0.5
+  drop_last_train: true
+  drop_last_eval: true
+  legacy_split_denominator: true
+  output_dir: outputs/gesture

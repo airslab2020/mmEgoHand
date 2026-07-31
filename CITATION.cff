@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software or dataset, please cite the mmEgoHand paper."
+title: "mmEgoHand: Egocentric Hand Pose Estimation and Gesture Recognition with Head-mounted Millimeter-wave Radar and IMU"
+type: software
+version: 1.0.0
+date-released: 2026-07-31
+authors:
+  - given-names: Yizhe
+    family-names: Lv
+    orcid: "https://orcid.org/0009-0005-3319-7561"
+  - given-names: Tingting
+    family-names: Zhang
+    orcid: "https://orcid.org/0009-0007-2157-4360"
+  - given-names: Zhijian
+    family-names: Wang
+    orcid: "https://orcid.org/0009-0009-8143-2860"
+  - given-names: Yunpeng
+    family-names: Song
+    orcid: "https://orcid.org/0000-0002-4186-0408"
+  - given-names: Han
+    family-names: Ding
+    orcid: "https://orcid.org/0000-0002-5274-7988"
+  - given-names: Jinsong
+    family-names: Han
+    orcid: "https://orcid.org/0000-0001-5064-1955"
+  - given-names: Fei
+    family-names: Wang
+    orcid: "https://orcid.org/0000-0002-0750-6990"
+repository-code: "https://github.com/airslab2020/mmEgoHand"
+license: Apache-2.0

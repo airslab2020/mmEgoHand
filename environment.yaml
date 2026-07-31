@@ -1,0 +1,13 @@
+name: mmegohand
+channels:
+  - pytorch
+  - conda-forge
+dependencies:
+  - python=3.9
+  - h5py>=3.8
+  - numpy>=1.23
+  - psutil>=5.9
+  - pyyaml>=6.0
+  - scipy>=1.9
+  - pytorch>=1.13
+  - pip

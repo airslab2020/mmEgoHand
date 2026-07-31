@@ -1,0 +1,9 @@
+mmEgoHand
+Copyright 2026 mmEgoHand contributors
+
+This repository consolidates and revises code originally released at:
+https://github.com/WhisperYi/mmVR
+
+The original and revised source code is distributed under the Apache License,
+Version 2.0. Modified files have been reorganized, documented, and made
+device-agnostic for this release.
