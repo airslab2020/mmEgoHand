@@ -129,8 +129,15 @@ sample_name,subject-hand setting,scene,gesture,repetition
 
 The fixed protocol places repetitions 5, 10, 15, and 20 in the test set and the
 remaining repetitions in the training set. After quality filtering, the
-provided manifests contain 4,151 training and 1,055 test samples. Validate them
-with:
+provided manifests contain 4,151 training and 1,055 test samples.
+
+This periodic holdout distributes test repetitions across the acquisition
+sequence while keeping each complete trial in only one partition. Because
+training and test repetitions still come from the same subject and condition,
+the protocol is not equivalent to a contiguous chronological or cross-session
+holdout; this temporal-correlation risk is discussed as a paper limitation.
+
+Validate the manifests with:
 
 ```bash
 python scripts/validate_splits.py

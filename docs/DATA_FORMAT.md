@@ -34,8 +34,13 @@ selection.
 - `T x H x 21 x 3`
 - `T x H x 63`
 
-The coordinates are expressed in meters. The training target is normalized to
-`30 x H x 63`.
+The coordinate values are MediaPipe world landmarks expressed in meters and are
+used directly as the camera-view target representation. No camera intrinsic
+calibration, camera-to-radar extrinsic calibration, scale fitting, or rigid
+coordinate transformation is applied. The model learns a direct supervised
+mapping from synchronized radar/IMU inputs to this pseudo-label convention; its
+outputs are not radar-centered geometric coordinates. The loader resamples and
+reshapes the training target to `30 x H x 63`.
 
 ## Pose outputs
 
