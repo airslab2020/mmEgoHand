@@ -3,10 +3,26 @@
 Official implementation of **mmEgoHand: Egocentric Hand Pose Estimation and
 Gesture Recognition with Head-mounted Millimeter-wave Radar and IMU**.
 
-mmEgoHand uses a head-mounted TI IWR6843 radar and a six-channel IMU to estimate
-21 three-dimensional joints for one or two hands. A downstream ResNet-50
-classifies eight interaction gestures from the estimated pose sequence. The
-current dataset covers controlled sitting, lying, and standing conditions.
+Modern VR systems commonly use downward-facing cameras for hand interaction,
+but those cameras may also capture recognizable visual information about the
+user and the surrounding environment. mmEgoHand investigates a
+privacy-conscious alternative based on a head-mounted TI IWR6843 mmWave radar
+and a six-channel inertial measurement unit (IMU).
+
+The system uses a two-stage, pose-mediated recognition pipeline:
+
+1. **mmHandPose** fuses radar heatmaps and IMU measurements with an end-to-end
+   Transformer to estimate 21 three-dimensional joints for one or two hands.
+2. A downstream **ResNet-50** classifies eight interaction gestures from the
+   estimated pose sequence.
+
+The paper evaluates 10 volunteers in controlled sitting, lying, and standing
+conditions. Under the fixed repetition-based protocol supplied in this
+repository, the two-stage system achieves 90.80% gesture recognition accuracy.
+The paper also reports cross-user, cross-hand, cross-posture, cross-scene, and
+few-shot calibration experiments. These results characterize controlled,
+quasi-stationary interaction; walking and turning are outside the scope of the
+current dataset.
 
 This repository consolidates the paper implementation with the earlier
 [WhisperYi/mmVR](https://github.com/WhisperYi/mmVR) release. It removes
@@ -45,7 +61,20 @@ executed FFN path is `512 -> 1024 -> 512`. See
 
 ## Installation
 
-Python 3.9 or newer is recommended.
+### Prerequisites
+
+- Linux is recommended for training and dataset preprocessing.
+- Python 3.9 or newer.
+- A CPU, or an NVIDIA GPU with a PyTorch-compatible CUDA installation.
+
+Clone the consolidated repository:
+
+```bash
+git clone https://github.com/airslab2020/mmEgoHand.git
+cd mmEgoHand
+```
+
+Create a virtual environment and install the package:
 
 ```bash
 python -m venv .venv
@@ -54,10 +83,29 @@ pip install --upgrade pip
 pip install -e .
 ```
 
+Conda users can instead create the provided environment:
+
+```bash
+conda env create -f environment.yaml
+conda activate mmegohand
+pip install -e .
+```
+
 Install the PyTorch build appropriate for the host CUDA version when GPU
 acceleration is required.
 
 ## Data
+
+### Download
+
+The dataset originally released with
+[WhisperYi/mmVR](https://github.com/WhisperYi/mmVR) is available from
+[Kaggle](https://www.kaggle.com/datasets/cdf079d9f49052500a08482b692eac6758d83e6b1ba9868d677c5cb814c427aa).
+Download `dataset.zip`, extract it, and place the data under `data/`. The
+original archive uses some legacy directory names; the current loaders accept
+those aliases as described below.
+
+### Layout
 
 Place the downloaded dataset under `data/`:
 
@@ -112,7 +160,7 @@ expected one- or two-hand detections, interpolates retained gaps, and resamples
 the sequence to 30 frames. Verify the camera convention on a few clips; use
 `--swap-handedness` when MediaPipe's left/right labels are reversed.
 
-## Pose Estimation
+## Stage 1: Pose Estimation
 
 ```bash
 python scripts/train_pose.py --data-root /path/to/data
@@ -132,7 +180,7 @@ MPJPE is reported in millimeters against the MediaPipe-derived 3D pseudo
 labels. It should not be interpreted as error against motion-capture ground
 truth.
 
-## Gesture Recognition
+## Stage 2: Gesture Recognition
 
 Export Hungarian-matched pose predictions, then train the downstream model:
 
@@ -146,6 +194,49 @@ python scripts/evaluate_gesture.py outputs/gesture/best.pt \
 For a single-hand sequence, the absent left/right slot is zero-padded according
 to the executing-hand metadata, producing a fixed `30 x 42 x 3` input. Two-hand
 sequences already contain both 21-joint slots.
+
+## Repository Structure
+
+```text
+.
+├── configs/
+│   └── paper.yaml
+├── docs/
+│   ├── DATA_FORMAT.md
+│   └── PAPER_CODE_ALIGNMENT.md
+├── mmegohand/
+│   ├── configuration.py
+│   ├── data.py
+│   ├── engine.py
+│   ├── gesture.py
+│   ├── losses.py
+│   ├── matcher.py
+│   ├── model.py
+│   ├── position_encoding.py
+│   ├── runtime.py
+│   └── transformer_layers.py
+├── scripts/
+│   ├── prepare_sensor_data.py
+│   ├── generate_pseudo_labels.py
+│   ├── train_pose.py
+│   ├── evaluate_pose.py
+│   ├── export_poses.py
+│   ├── train_gesture.py
+│   ├── evaluate_gesture.py
+│   ├── profile_model.py
+│   └── validate_splits.py
+├── splits/
+│   ├── train.txt
+│   └── test.txt
+├── tests/
+├── environment.yaml
+├── pyproject.toml
+└── requirements.txt
+```
+
+`mmegohand/` contains reusable model, data, loss, and runtime components;
+`scripts/` contains the supported command-line entry points; and `splits/`
+records the exact paper protocol.
 
 ## Profiling
 
